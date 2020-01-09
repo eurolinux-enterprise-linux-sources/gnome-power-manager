@@ -4,7 +4,7 @@
 Summary: GNOME power management service
 Name: gnome-power-manager
 Version: 2.28.3
-Release: 3%{?dist}
+Release: 5%{?dist}
 License: GPLv2+ and GFDL
 Group: Applications/System
 Source: http://download.gnome.org/sources/gnome-power-manager/2.28/gnome-power-manager-%{version}.tar.gz
@@ -32,6 +32,12 @@ Patch5: gnome-power-manager-2.28.3-do-not-show-sleep-site.patch
 # update translations
 # https://bugzilla.redhat.com/show_bug.cgi?id=575710
 Patch6: gnome-power-manager-translations.patch
+
+# RHEL specific, fixes rh#640296
+Patch7: gnome-power-manager-2.28.3-dont-look-at-help-file.patch
+
+# RHEL specific (because per-screen DPMS does not work), fixes rh#623674
+Patch8: gnome-power-manager-2.28.3-reinstate-do-nothing.patch
 
 BuildRequires: libwnck-devel
 BuildRequires: hal-devel >= %{hal_version}
@@ -85,6 +91,9 @@ Extra GNOME power management applications that are not normally needed.
 %patch4 -p1 -b .spam
 %patch5 -p1 -b .no-quirk-site
 %patch6 -p1 -b .translations
+%patch7 -p1 -b .dont-mention-help-file
+%patch8 -p1 -b .reinstate-do-nothing
+
 autoreconf -i
 
 %build
@@ -205,6 +214,16 @@ fi
 %{_datadir}/icons/hicolor/*/apps/gnome-inhibit-applet.*
 
 %changelog
+* Tue Feb 01 2011 Richard Hughes  <rhughes@redhat.com> - 2.28.3-5
+- Reinstate the "Do nothing" option on the lid close combo because
+  per-screen DPMS does not work in RHEL6.
+- Resolves: #623674
+
+* Mon Jan 31 2011 Richard Hughes  <rhughes@redhat.com> - 2.28.3-4
+- Do not ask the user to look at the help file on suspend failure,
+  it is already out of date.
+- Resolves: #640296
+
 * Wed May  5 2010 Matthias Clasen <mclasen@redhat.com> - 2.28.3-3
 - Update translations
 Resolves: #575710
