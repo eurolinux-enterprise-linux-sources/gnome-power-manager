@@ -4,7 +4,7 @@
 Summary: GNOME power management service
 Name: gnome-power-manager
 Version: 2.28.3
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: GPLv2+ and GFDL
 Group: Applications/System
 Source: http://download.gnome.org/sources/gnome-power-manager/2.28/gnome-power-manager-%{version}.tar.gz
@@ -41,6 +41,9 @@ Patch8: gnome-power-manager-2.28.3-reinstate-do-nothing.patch
 
 # Already upstream, never use a status icon for debugging, fixes rh#676866
 Patch9: 0001-Do-not-ever-use-a-status-icon-for-debugging-idle-pro.patch
+
+# Already upstream, don't dim when on battery, fixes rh#574713
+Patch10: 0001-Don-t-dim-the-screen-by-default-on-battery-power.patch
 
 BuildRequires: libwnck-devel
 BuildRequires: hal-devel >= %{hal_version}
@@ -97,6 +100,7 @@ Extra GNOME power management applications that are not normally needed.
 %patch7 -p1 -b .dont-mention-help-file
 %patch8 -p1 -b .reinstate-do-nothing
 %patch9 -p1 -b .no-idle-error-status-icon
+%patch10 -p1 -b .no-auto-dim-on-battery
 
 autoreconf -i
 
@@ -218,6 +222,11 @@ fi
 %{_datadir}/icons/hicolor/*/apps/gnome-inhibit-applet.*
 
 %changelog
+* Wed Jan 16 2013 Richard Hughes  <rhughes@redhat.com> - 2.28.3-7
+- Don't dim the screen by default on battery power -- it was never a
+  good default, and we're doing this a different way in GNOME 3.
+- Resolves: #912270
+
 * Mon Mar 05 2012 Richard Hughes  <rhughes@redhat.com> - 2.28.3-6
 - Do not ever use a status icon for debugging idle problems.
 - Resolves: #676866
